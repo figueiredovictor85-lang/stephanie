@@ -1,0 +1,67 @@
+STEPHANIE — NOTIFICAÇÕES PUSH • VERSÃO 2
+
+O QUE FOI ADICIONADO
+Notificações pelo próprio Netlify, inclusive com o aplicativo fechado.
+07h café • 12h almoço • 15h água • 00h sair do TikTok e dormir.
+Horário fixo de Salvador/Bahia, UTC-3. Não precisa de OneSignal.
+Inclui: cadastro de aparelhos, botão de teste, desativação, chaves VAPID geradas automaticamente e guardadas somente no servidor, remoção de assinaturas expiradas, prevenção de envio duplicado.
+
+ATENÇÃO: NÃO BASTA ARRASTAR ESTE ZIP PARA O NETLIFY DROP.
+O Drop publica arquivos estáticos, mas este app agora precisa das funções do servidor e agendamentos. Use uma das opções abaixo. Não envie a pasta inteira como conteúdo público: a pasta pública correta é public.
+
+OPÇÃO 1 — GITHUB + NETLIFY
+1. Extraia este ZIP. Coloque os arquivos em um repositório seu no GitHub (preferencialmente privado). Mantenha as pastas public, netlify, scripts e tests, além de package.json, package-lock.json e netlify.toml.
+2. No Netlify, importe/conecte esse repositório. Para atualizar o site antigo, conecte o repositório ao mesmo projeto. O netlify.toml já define:
+   Build command: npm run build
+   Publish directory: public
+   Functions directory: netlify/functions
+3. Nas variáveis de ambiente do projeto, crie STEPHANIE_CODE.
+   Valor: escolha um código privado com pelo menos 12 caracteres, difícil de adivinhar. Autorize o escopo Functions/Runtime (ou todos os escopos se não houver escolha).
+   Passe esse código apenas para Stephanie. Não coloque o código em public nem no GitHub.
+4. Publique/faça um novo deploy após criar a variável.
+5. Em Functions, confirme push-api e as quatro funções reminder-*. As reminder-* devem aparecer como Scheduled. Os horários no painel podem estar em UTC: 10h, 15h, 18h e 03h correspondem a 07h, 12h, 15h e 00h na Bahia.
+
+OPÇÃO 2 — SEM GITHUB, PELO TERMINAL
+Instale Node.js 22 ou superior pelo site oficial. Abra o terminal na pasta extraída (a que contém package.json) e execute um comando de cada vez:
+
+npm ci
+npx netlify-cli login
+npx netlify-cli link
+
+No link, selecione o site Netlify correto. Se ainda não existir, crie um projeto no painel antes. No painel desse projeto, configure STEPHANIE_CODE conforme o passo 3 acima. Depois execute:
+
+npx netlify-cli deploy --build --prod
+
+Autorize a instalação do CLI oficial quando o npm perguntar.
+O deploy precisa ser de produção para os agendamentos rodarem.
+
+NO IPHONE DELA
+1. iOS 16.4 ou superior, internet e acesso ao link HTTPS publicado.
+2. Safari → Compartilhar → Adicionar à Tela de Início.
+3. Abra pelo ícone da flor na Tela de Início (não só pela aba do Safari).
+4. Toque no sino, informe o código que você criou e toque em Ativar meus carinhos.
+5. Toque em Permitir no aviso do iPhone.
+6. Toque em Receber um carinho de teste. Confira a Central de Notificações.
+7. Depois disso, o servidor envia os quatro lembretes diários; pode fechar o app.
+
+SE ELA JÁ INSTALOU A VERSÃO ANTIGA
+Publique no mesmo endereço. Feche e reabra o app conectado à internet para carregar a nova versão. Se o botão antigo continuar aparecendo, abra o link atualizado no Safari e reinstale o atalho da Tela de Início. Reinstalar pode apagar os favoritos locais e exige ativar as notificações novamente.
+
+CONTROLES E LIMITES
+- Para desativar: sino → código → Desativar neste aparelho, ou Ajustes do iPhone → Notificações.
+- O código protege apenas o cadastro/controle dos avisos; não é uma senha para ler o site.
+- Limite de 5 aparelhos; não divulgue o código de ativação.
+- As chaves e assinaturas ficam no Netlify Blobs do seu projeto, não nos arquivos públicos. Não apague o armazenamento para manter as assinaturas funcionando.
+- O horário é o de envio programado: internet, modo Foco, bateria e decisões do iOS/serviço push podem atrasar ou silenciar a entrega.
+- O teste confirma aceitação pelo serviço push, não leitura nem entrega no aparelho.
+- Confira as cotas/consumo do seu plano Netlify. Não foi contratado nenhum serviço ou plano por este pacote.
+- O app não funciona como WhatsApp: os textos são pré-programados e enviados pelo servidor.
+
+VERIFICAÇÃO
+O código foi verificado localmente com testes automatizados. Não foi publicado na sua conta Netlify nem testado em um iPhone real: a confirmação final depende dos passos acima.
+Para rodar os testes: npm test
+
+DOCUMENTAÇÃO
+https://docs.netlify.com/build/functions/scheduled-functions/
+https://docs.netlify.com/build/data-and-storage/netlify-blobs/
+https://developer.apple.com/documentation/usernotifications/sending-web-push-notifications-in-web-apps-and-browsers
